@@ -1,22 +1,29 @@
----
-title: Pychelle
----
-
 # Pychelle
 
-Pychelle is a **Py**thon helper app for 1D and 2D e**chelle** spectroscopy. It
-allows to load a 2D spectrum, select and extract a subset of the rows for
-modelling, building models by eye and calling a back-end fitter (for now,
-only [LMfit]) to perform the fitting. It allows to set the included and ignored
-fit ranges for each row, and assigning identifying labels and color codes to
-individual components, allowing to treat them group-wise. 
+Pychelle is a **Py**thon helper app for 1D and 2D e**chelle** (and, to be
+honest, also most other kinds of) spectroscopy. It allows to load a 2D
+spectrum, select and extract a subset of the rows for modelling, building
+models by eye and calling a back-end fitter (for now, only [LMfit]) to perform
+the fitting. It allows to set the included and ignored fit ranges for each
+row, and assigning identifying labels and color codes to individual
+components, allowing to treat them group-wise. 
 
 It manages transitions based on an easily extensible plain-text list. The
 resulting model is returned as a Pandas DataFrame. 
 
-The repository includes a sample data set of supernova 1984A, observed with the
-UVES spectrograph at the ESO Very Large Telescope in Paranal, Chile. The
+The repository includes a sample data set of supernova 1984A, observed with
+the UVES spectrograph at the ESO Very Large Telescope in Paranal, Chile. The
 spectrum is public and the first analysis was presented in this [paper].
+
+
+# Dependencies
+
+Pychelle depends on the standard [SciPy stack](www.scipy.org) and, on top of
+that the [Enthought Tool Suite](code.enthough.com/projects), especially Traits
+& TraitsUI (GUI and interface libraries) and Chaco (plotting package). 
+
+Optional requirements are [Astroquery] and its dependency [Astropy] for
+finding redshifts online, and [LMfit] necessary for actual fitting. 
 
 
 # Caveats & limitations
@@ -91,7 +98,7 @@ wave = sn.wavl
 model = sn.model
 ~~~
 
-# TODO-list
+# TODO
 
 - [x] 2D Spectrum object
 - [x] Main overview window
@@ -112,6 +119,9 @@ model = sn.model
 
 
 
+
 [LMfit]: http://lmfit.github.io 
 [presentation]: http://bit.ly/EsoHaroTalk
-[paper]: www.google.com
+[paper]: www.google.com 
+[Astroquery]: https://astroquery.readthedocs.io/en/latest/ 
+[Astropy]: www.astropy.org
