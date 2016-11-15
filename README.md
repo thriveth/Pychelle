@@ -35,9 +35,10 @@ although it should also be usable -- See this [presentation] for an example.
 However, it has several bugs and things that could be done better; I will fix
 these when I have time, but I am of course thankful for pull requests. 
 
-One known bug is that sometimes, reassigning identifier labels gets applied to
-the wrong components, and there is no way to revert this. It is probably not a
-very difficult bug to squash, but I have not had time to fix it yet.
+One known bug is that ~~sometimes, reassigning identifier labels gets applied
+to the wrong components, and there is no way to revert this. It is probably
+not a very difficult bug to squash, but I have not had time to fix it yet~~
+***This has now been fixed***.
 
 The modeling interface so far only supports a constant continuum and Gaussian
 emission peaks. Gaussian absorption is trivial to add, but other continuum and
@@ -75,22 +76,23 @@ one-letter ID labels, which can be reassigned with the bottom dialog.
 
 # Simple test session
 
-First, the import:
-
-~~~python 
-import pychelle as pc 
-~~~
-
-Next, load the data into a `Spectrum2D` object, and in turn load this into a
+First, load the data into a `Spectrum2D` object, and in turn load this into a
 `Show2DSpec` object:
 
 ~~~python
+import pychelle as pc 
+
 sn = pc.load_2d('./testdata/SN1987a-Halpha.fits', objname='SN1987a')
+# Optional:
+sn.load_model('./testdata/SN1987a-Halpha-model.csv')
+# Vire the interface, returns the view.
 SN = pc.view_2d(sn, Center=6564.)  # To view the H-Alpha region
+# The view can be reopened:
+SN.configure_traits(view='main')
 ~~~
 
-The model, data and other quantities can now be retreived as properties of the
-`Spectrum2D` object, e.g.
+When not working interactively, the model, data and other quantities can now
+be retreived as properties of the `Spectrum2D` object, e.g.
 
 ~~~python
 fluxes = sn.flux  # Integrated flux for each model component

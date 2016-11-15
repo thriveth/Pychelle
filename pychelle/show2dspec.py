@@ -1315,20 +1315,20 @@ class Show2DSpec(HasTraits):
             transits = self.Spectrum.model.index.levels[0].tolist()
         else:
             transits = [self.transition]
-        model = self.model.copy()\
-            .set_index('Identifier', append=True, drop=False)\
-            .reset_index('Component', drop=False)
+        model = self.model.copy()#\
+        #    .set_index('Identifier', append=True, drop=False)\
+        #    .reset_index('Component', drop=False)
         the_index = model.loc[self.transition]\
             .drop('Contin', level=1).index[x_mask]
         for t in transits:
             for ind in the_index:
-                model.set_value(
+                model = model.set_value(
                     (t, ind[0], ind[1]), 'Identifier', self.the_label
                 )
         # TODO: I think this is the source for my problems. Why change index
         # here??
-        self.model = model.set_index('Component', append=True, drop=True)\
-            .reset_index('Identifier', drop=True)
+        self.model = model#.set_index('Component', append=True, drop=True)\
+        #     .reset_index('Identifier', drop=True)
         self._build_model_plot()
         self.ContCont.request_redraw()
         self.Posplot.request_redraw()
