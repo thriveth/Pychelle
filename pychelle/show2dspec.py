@@ -1315,7 +1315,7 @@ class Show2DSpec(HasTraits):
             transits = self.Spectrum.model.index.levels[0].tolist()
         else:
             transits = [self.transition]
-        model = self.model.copy()#\
+        model = self.model.copy()\
             .set_index('Identifier', append=True, drop=False)\
             .reset_index('Component', drop=False)
         the_index = model.loc[self.transition]\
@@ -1327,8 +1327,8 @@ class Show2DSpec(HasTraits):
                 )
         # TODO: I think this is the source for my problems. Why change index
         # here??
-        # self.model = model.set_index('Component', append=True, drop=True)\
-        #     .reset_index('Identifier', drop=True)
+        self.model = model.set_index('Component', append=True, drop=True)\
+            .reset_index('Identifier', drop=True)
         self._build_model_plot()
         self.ContCont.request_redraw()
         self.Posplot.request_redraw()
