@@ -4,8 +4,8 @@ Pychelle is a **Py**thon helper app for 1D and 2D e**chelle** (and, to be
 honest, also most other kinds of) spectroscopy. It allows to load a 2D
 spectrum, select and extract a subset of the rows for modelling, building
 models by eye and calling a back-end fitter (for now, only [LMfit]) to perform
-the fitting. It allows to set the included and ignored fit ranges for each
-row, and assigning identifying labels and color codes to individual
+the fitting. It allows to set the included and ignored fit ranges for each row
+or set of rows, and assigning identifying labels and color codes to individual
 components, allowing to treat them group-wise. 
 
 It manages transitions based on an easily extensible plain-text list. The
@@ -13,7 +13,8 @@ resulting model is returned as a Pandas DataFrame.
 
 The repository includes a sample data set of supernova 1984A, observed with
 the UVES spectrograph at the ESO Very Large Telescope in Paranal, Chile. The
-spectrum is public and the first analysis was presented in this [paper].
+spectrum is public and the first analysis was presented in this [paper] (*not*
+using Pychelle).
 
 
 # Dependencies
@@ -23,7 +24,7 @@ that the [Enthought Tool Suite](code.enthough.com/projects), especially Traits
 & TraitsUI (GUI and interface libraries) and Chaco (plotting package). 
 
 Optional requirements are [Astroquery] and its dependency [Astropy] for
-finding redshifts online, and [LMfit] necessary for actual fitting. 
+finding redshifts online, and [LMfit] necessary for actual fitting.
 
 
 # Caveats & limitations
@@ -113,7 +114,7 @@ model = sn.model
 - [ ] Support more different line shapes and absorption lines
 - [ ] Support velocity space besides wavelengths
 - [ ] Support more fitting backends (e.g. Sherpa, scipy.optimize,
-  Astropy.modeling etc. )
+      Astropy.modeling etc. )
 - [ ] Improve documentation.
 - [ ] Longer term: rewrite to be based on Astropy
 
