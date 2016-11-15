@@ -20,7 +20,7 @@ using Pychelle).
 # Dependencies
 
 Pychelle depends on the standard [SciPy stack](http://www.scipy.org) and, on
-top of that the [Enthought Tool Suite](http://code.enthough.com/projects),
+top of that the [Enthought Tool Suite](http://code.enthought.com/projects),
 especially Traits & TraitsUI (GUI and interface libraries) and Chaco (plotting
 package). 
 
