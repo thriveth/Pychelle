@@ -66,7 +66,7 @@ terms of error spectrum.
 ![Line profile builder](./Screenshots/OneDFitter.png)
 
 Finally, the component editor. The three plot panels shows the three Gaussian
-parameters: Center, amplitude and width (given as \(\sigma\)). Colors reflect
+parameters: Center, amplitude and width (given as \[\sigma\]). Colors reflect
 one-letter ID labels, which can be reassigned with the bottom dialog. 
 
 ![Component editor](./Screenshots/ComponentEditor.png)
