@@ -19,9 +19,10 @@ using Pychelle).
 
 # Dependencies
 
-Pychelle depends on the standard [SciPy stack](www.scipy.org) and, on top of
-that the [Enthought Tool Suite](code.enthough.com/projects), especially Traits
-& TraitsUI (GUI and interface libraries) and Chaco (plotting package). 
+Pychelle depends on the standard [SciPy stack](http://www.scipy.org) and, on
+top of that the [Enthought Tool Suite](http://code.enthough.com/projects),
+especially Traits & TraitsUI (GUI and interface libraries) and Chaco (plotting
+package). 
 
 Optional requirements are [Astroquery] and its dependency [Astropy] for
 finding redshifts online, and [LMfit] necessary for actual fitting.
@@ -123,6 +124,6 @@ model = sn.model
 
 [LMfit]: http://lmfit.github.io 
 [presentation]: http://bit.ly/EsoHaroTalk
-[paper]: www.google.com 
+[paper]: http://www.google.com 
 [Astroquery]: https://astroquery.readthedocs.io/en/latest/ 
-[Astropy]: www.astropy.org
+[Astropy]: http://www.astropy.org

@@ -727,7 +727,6 @@ class Show2DSpec(HasTraits):
         self.Sigplot = Sigplot
         self.ContCont = ContCont
 
-        # TODO: Insert subplots here.
         # Create the colorbar, handing in the appropriate range and colormap
         colormap = self.my_plot.color_mapper
         colorbar = ColorBar(
@@ -1303,6 +1302,8 @@ class Show2DSpec(HasTraits):
 
 
     def _set_label_fired(self):
+        self.model = self.model.sort_index()
+        self._build_model_plot()
         y_mask = self.posplot[0].value.metadata.get('selections', [])
         x_mask = self.posplot[0].index.metadata.get('selections', [])
         self.all_labels = self.model.drop('Dummy', level=0)\
@@ -1314,7 +1315,7 @@ class Show2DSpec(HasTraits):
             transits = self.Spectrum.model.index.levels[0].tolist()
         else:
             transits = [self.transition]
-        model = self.model.copy()\
+        model = self.model.copy()#\
             .set_index('Identifier', append=True, drop=False)\
             .reset_index('Component', drop=False)
         the_index = model.loc[self.transition]\
@@ -1324,8 +1325,10 @@ class Show2DSpec(HasTraits):
                 model.set_value(
                     (t, ind[0], ind[1]), 'Identifier', self.the_label
                 )
-        self.model = model.set_index('Component', append=True, drop=True)\
-            .reset_index('Identifier', drop=True)
+        # TODO: I think this is the source for my problems. Why change index
+        # here??
+        # self.model = model.set_index('Component', append=True, drop=True)\
+        #     .reset_index('Identifier', drop=True)
         self._build_model_plot()
         self.ContCont.request_redraw()
         self.Posplot.request_redraw()
