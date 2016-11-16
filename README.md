@@ -11,8 +11,8 @@ components, allowing to treat them group-wise.
 It manages transitions based on an easily extensible plain-text list. The
 resulting model is returned as a Pandas DataFrame. 
 
-The repository includes a sample data set of supernova 1984A, observed with
-the UVES spectrograph at the ESO Very Large Telescope in Paranal, Chile. The
+The repository includes a sample data set of supernova 1987A, observed with the
+UVES spectrograph at the ESO Very Large Telescope in Paranal, Chile. The
 spectrum is public and the first analysis was presented in this [paper] (*not*
 using Pychelle).
 
