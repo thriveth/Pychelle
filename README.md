@@ -85,7 +85,7 @@ import pychelle as pc
 sn = pc.load_2d(
     './testdata/SN1987a-Halpha.fits',
     objname='SN1987a',  # Should be resolvable in NED if redshift query wanted.
-    redshift=False,  # Calls NED through Astroquery
+    redshift=False,     # Calls NED through Astroquery, relevant for extragalactic objects
 )
 # Optional:
 sn.load_model('./testdata/SN1987a-Halpha-model.csv')
