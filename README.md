@@ -80,9 +80,13 @@ First, load the data into a `Spectrum2D` object, and in turn load this into a
 `Show2DSpec` object:
 
 ~~~python
-import pychelle as pc 
+import pychelle as pc
 
-sn = pc.load_2d('./testdata/SN1987a-Halpha.fits', objname='SN1987a')
+sn = pc.load_2d(
+    './testdata/SN1987a-Halpha.fits',
+    objname='SN1987a',  # Should be resolvable in NED if redshift query wanted.
+    redshift=False,  # Calls NED through Astroquery
+)
 # Optional:
 sn.load_model('./testdata/SN1987a-Halpha-model.csv')
 # Vire the interface, returns the view.
@@ -92,7 +96,7 @@ SN.configure_traits(view='main')
 ~~~
 
 When not working interactively, the model, data and other quantities can now
-be retreived as properties of the `Spectrum2D` object, e.g.
+be retrieved as properties of the `Spectrum2D` object, e.g.
 
 ~~~python
 fluxes = sn.flux  # Integrated flux for each model component
