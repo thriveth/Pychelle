@@ -70,7 +70,7 @@ def _H(a, u):
     H0 = np.e**(-(u**2))
     Q  = 1.5/u**2
     H  = H0-(a/np.sqrt(np.pi)/P*(H0*H0*(4*P*P+7*P+4+Q)-Q-1))
-    print P, H0, Q
+    print(P, H0, Q)
     return H
 
 

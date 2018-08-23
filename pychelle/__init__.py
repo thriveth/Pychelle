@@ -31,7 +31,7 @@ import pandas as pd
 #         add_default_axes, add_default_grids, OverlayPlotContainer
 # from chaco.tools.api import ScatterInspector, ZoomTool, PanTool, \
 #         BroadcasterTool, LegendTool, RangeSelection, RangeSelectionOverlay
-from lpbuilder import ProfileEditor, load_profile
+from .lpbuilder import ProfileEditor, load_profile
 
 # TODO: Create redshift-estimator class/view, with a simple list of
 # HI-transitions and maybe a few other strong features as a guide. Just set
@@ -42,11 +42,11 @@ from lpbuilder import ProfileEditor, load_profile
 # helper functions (where to leave lines_srs?). Plus, I suppose, separate files
 # for fitting backends. These should be
 
-from helper_functions import air_to_vacuum, vacuum_to_air, load_lines_series
-from spectrum2d import Spectrum2D
-from show2dspec import SetFitRange, view_2d, Show2DSpec, load_2d, lines_srs, \
+from .helper_functions import air_to_vacuum, vacuum_to_air, load_lines_series
+from .spectrum2d import Spectrum2D
+from .show2dspec import SetFitRange, view_2d, Show2DSpec, load_2d, lines_srs, \
     fit_transition_to_other
-from helper_functions import _extract_1d, wl_to_v, v_to_wl, \
+from .helper_functions import _extract_1d, wl_to_v, v_to_wl, \
     transition_from_existing, set_model, fit_with_sherpa \
 
 # lines_srs = load_lines_series()
@@ -59,7 +59,7 @@ from helper_functions import _extract_1d, wl_to_v, v_to_wl, \
 if __name__ == '__main__':
     #load_lines_dict()
     My2dSpec = load_2d('Haro11-B-Combined-VIS.fits')
-    print 'My2dSpec object created'
+    print('My2dSpec object created')
     Base_Ui = view_2d(My2dSpec, Center=6699.5)
-    print My2dSpec.model
-    print My2dSpec.line_spectra
+    print(My2dSpec.model)
+    print(My2dSpec.line_spectra)

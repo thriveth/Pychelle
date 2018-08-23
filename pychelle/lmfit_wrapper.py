@@ -24,7 +24,7 @@ import pandas as pd
 try:
     import lmfit as lf
 except ImportError:
-    print 'Could not find working lmfit installation.'
+    print('Could not find working lmfit installation.')
     raise
 
 

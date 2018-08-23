@@ -19,12 +19,12 @@ from chaco.api import ArrayPlotData, PlotLabel, Plot, HPlotContainer, \
     add_default_grids, ColorMapper
 from chaco.tools.api import ScatterInspector, ZoomTool, \
     RangeSelection, RangeSelectionOverlay
-from spectrum2d import Spectrum2D
-from transition import Transition
-from helper_functions import load_lines_series, _extract_1d, \
+from .spectrum2d import Spectrum2D
+from .transition import Transition
+from .helper_functions import load_lines_series, _extract_1d, \
     transition_from_existing
-from lpbuilder import ProfileEditor
-from paired import Paired
+from .lpbuilder import ProfileEditor
+from .paired import Paired
 
 
 def load_2d(filename, objname=None, redshift=False):
@@ -36,12 +36,12 @@ def load_2d(filename, objname=None, redshift=False):
     if(len(HDUList) > 1):
         errs = HDUList[1].data
     else:
-        print "No error spectrum present"
-        print "Set all errors to 1."
+        print("No error spectrum present")
+        print("Set all errors to 1.")
         errs = sp.ones_like(data)
     if len(data.shape) < 2:
-        print "This is a one-dimensional spectrum and cannot be opened \
-                in the 2D-viewer"
+        print("This is a one-dimensional spectrum and cannot be opened \
+                in the 2D-viewer")
     datathingie = Spectrum2D(data, errs, head)
     if objname is not None:
         datathingie.objname = objname
@@ -99,7 +99,7 @@ def fit_transition_to_other(view=None, spectrum=None, transition=None,
     """
 
     if (view is None) & (spectrum is None):
-        print 'Either spectrum of view must be given. Aborting.'
+        print('Either spectrum of view must be given. Aborting.')
         return
     elif view is None:
         view = Show2DSpec(spectrum)
@@ -128,13 +128,13 @@ def fit_transition_to_other(view=None, spectrum=None, transition=None,
         v.LineLo = int(nums[0])
         v.LineUp = int(nums[1])
 
-        print('\n \n Now fitting rows {} using method {}'.format(s, method))
+        print(('\n \n Now fitting rows {} using method {}'.format(s, method)))
         lp = v.prepare_modeling()
 
         # Now do the stuff that the Go button in LPbuilder does (more or less):
         lp.create_fit_param_frame()
         if verbose:
-            print('Parameters to fit: \n', lp.tofit)
+            print(('Parameters to fit: \n', lp.tofit))
         lp.load_parameters_to_fitter()
         # print(lp.params)
 
@@ -160,16 +160,16 @@ def fit_transition_to_other(view=None, spectrum=None, transition=None,
                     exprdict[compo+'_Pos'] = pos_expr
                 if 'sigma' in tie:
                     exprdict[compo+'_Sigma'] = sig_expr
-        for key in exprdict.keys():
+        for key in list(exprdict.keys()):
             com = lp.params[key]
             com.set(expr=exprdict[key])
-        print(lp.params)
+        print((lp.params))
         v.lp = lp
-        print 'Now fitting rows: {}'.format(s)
+        print('Now fitting rows: {}'.format(s))
         v.lp.fit_with_lmfit(method=method, conf='conf')
         v.process_results()
         v._build_model_plot()
-        print('Succesfully fitted rows {} using method {}\n \n'.format(s, method))
+        print(('Succesfully fitted rows {} using method {}\n \n'.format(s, method)))
 
     # Don't alter any data in-place
     # transframe = spectrum.model.loc[transition].copy()
@@ -466,7 +466,7 @@ class Show2DSpec(HasTraits):
         # Make sure this constructor function can access parent spec Traits.
         super(Show2DSpec, self).__init__(Spectrum=Spectrum)
         # After Use newly accessed self awareness to construct new Traits
-        self.transit_list.extend(self.transit_dict.keys())
+        self.transit_list.extend(list(self.transit_dict.keys()))
         self.all_labels = self.model.drop('Dummy', level=0)\
             .drop('Contin', level=2)['Identifier'].unique().tolist()
         # print self.all_labels
@@ -809,7 +809,7 @@ class Show2DSpec(HasTraits):
         if self.transition == 'None':
             pass
         else:
-            print 'New transition selected: ', self.transition
+            print('New transition selected: ', self.transition)
             transwl = self.transition.split('(')[1][:-1]
             # Make sure the selected line is *not* changed to 'None' when we
             # jump to the center of the newly selected line:
@@ -867,8 +867,8 @@ class Show2DSpec(HasTraits):
                 ['Lambda_0'] * (1 + transition.z)
             # print 'transwl: ', transwl
             if foo:
-                print "This is Show2DSpec: transition added '" \
-                    + transname + "'"
+                print("This is Show2DSpec: transition added '" \
+                    + transname + "'")
                 self.transition = transname  # *After* setting transit_dict.
                 # We don't want duplicate entries in the transition list:
                 if transname not in self.transit_list:
@@ -890,14 +890,14 @@ class Show2DSpec(HasTraits):
                         try:
                             fit_transition_to_other(self)
                         except:
-                            print 'Quick fit did not succeed.'
+                            print('Quick fit did not succeed.')
                             raise
 
                 self._build_model_plot()
             else:
-                print 'Cancelled, no new transition added.'
+                print('Cancelled, no new transition added.')
         else:
-            print 'Something wrong when adding transition! \n'
+            print('Something wrong when adding transition! \n')
         return
 
     # =========================================================================
@@ -941,13 +941,13 @@ class Show2DSpec(HasTraits):
         lp.linesstring = linesstring
         if len(self.fitranges) == 0:
             self.fitranges = [(self.wavlmin, self.wavlmax)]
-        print 'Components before: ', lp.Components
+        print('Components before: ', lp.Components)
         # Inject existing model into the LineProfile object if there is one.
         if ((transname in self.model.index.levels[0]) and
                 (linesstring in self.model.index.levels[1])):
             to_insert = self.model.loc[transname].loc[linesstring]
             # Remove the automatically  created components in lp. model.
-            print to_insert.index
+            print(to_insert.index)
             if 'Comp' not in to_insert.index:
                 pass
             if 'Comp1' not in to_insert.index:
@@ -971,8 +971,8 @@ class Show2DSpec(HasTraits):
                              'Pos_stddev', 'Sigma_stddev', 'Ampl_stddev']]
                         .xs(i).values
                     )
-        print 'Components after: ', lp.Components
-        print lp.CompoList
+        print('Components after: ', lp.Components)
+        print(lp.CompoList)
         lp.import_model()
         return lp
 
@@ -994,7 +994,7 @@ class Show2DSpec(HasTraits):
                 .unstack()\
                 .drop((transname, linesstring))\
                 .stack()
-        for thekey in self.lp.Components.keys():
+        for thekey in list(self.lp.Components.keys()):
             if not thekey == 'Contin':
                 self.model = self.model.set_value(
                     (transname, linesstring, thekey),
@@ -1060,9 +1060,9 @@ class Show2DSpec(HasTraits):
                         self.lp.result.redchi
                     )
                 except:
-                    print ('No fit performed for lines {}, RedChi set to NaN'
+                    print(('No fit performed for lines {}, RedChi set to NaN'
                            .format(self.Spectrum.lines_sel)
-                    )
+                    ))
                     self.model = self.model.set_value(
                         (transname, linesstring, thekey),
                         'RedChi2', np.nan
@@ -1073,17 +1073,17 @@ class Show2DSpec(HasTraits):
     def _fit_this_fired(self):
         # Extract rows to 1D spectrum, send this to
         #     ProfileEditor class:
-        print '   '
-        print 'Now modelling selected rows and transition:'
+        print('   ')
+        print('Now modelling selected rows and transition:')
         # Is this step really necessary?
         transname, linesstring, fitranges = self.define_fitranges()
-        print 'Transition to be modelled:', transname
-        print 'Rows selected: {0} to {1}'.format(self.LineLo, self.LineUp)
+        print('Transition to be modelled:', transname)
+        print('Rows selected: {0} to {1}'.format(self.LineLo, self.LineUp))
 
         self.lp = self.prepare_modeling()
         # Now, ready to rock.
         new_model = self.lp.configure_traits(view='view')
-        print 'Line Profile return: ', new_model  # .result
+        print('Line Profile return: ', new_model)  # .result
         # When done creating the guessed or fitted model,
         #  insert it into Pandas DataFrame.
         if new_model:  # .result:
@@ -1269,7 +1269,7 @@ class Show2DSpec(HasTraits):
         return 'gray'
 
     def _colormaps_name_changed(self):
-        print("Selected colormap: {}".format(self.colormaps_name))
+        print(("Selected colormap: {}".format(self.colormaps_name)))
         clr_range = self.my_plot.color_mapper.range
         self.my_plot.color_mapper = \
             color_map_name_dict[self.colormaps_name](clr_range)
@@ -1309,7 +1309,7 @@ class Show2DSpec(HasTraits):
         self.all_labels = self.model.drop('Dummy', level=0)\
             .drop('Contin', level=2)['Identifier'].unique().tolist()
         do_it = self.edit_traits(view='ReassignView')
-        print('Label to set: {0}'.format(self.the_label))
+        print(('Label to set: {0}'.format(self.the_label)))
         # print do_it
         if self.apply_to_all_transitions is True:
             transits = self.Spectrum.model.index.levels[0].tolist()

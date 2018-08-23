@@ -178,8 +178,8 @@ def transition_from_existing(model, exist_trans, new_trans,
     try:
         exist_trans in model.index.levels[0]
     except NameError:
-        print "The transition {} was not found in the model"\
-            .format(exist_trans)
+        print("The transition {} was not found in the model"\
+            .format(exist_trans))
 
     # Copy the original transition model with only two lower levels of indexing
     # (omitting the one containing the transition name)
@@ -215,10 +215,10 @@ def transition_from_existing(model, exist_trans, new_trans,
         model.loc[exist_trans, 'Line center'],
         model.loc[exist_trans, 'Line center']
     )
-    print wlspace.loc['44-44']
-    print widthvel.loc['44-44']  # DEBUG
+    print(wlspace.loc['44-44'])
+    print(widthvel.loc['44-44'])  # DEBUG
     wlwidth = v_to_deltawl(widthvel, new_lincen)
-    print wlwidth['44-44']  # DEBUG
+    print(wlwidth['44-44'])  # DEBUG
     tmp['Pos'] = wlspace.values
     tmp['Line center'] = new_lincen
     tmp['Sigma'] = wlwidth.values
@@ -235,12 +235,12 @@ def transition_from_existing(model, exist_trans, new_trans,
     # if "new" line already in model, overwrite rather than creating multiple
     # versions:
     if new_trans in model.index:
-        print new_trans
+        print(new_trans)
         model = model.drop(new_trans, level=0)
     tmp = model.append(tmp)
     tmp = tmp.sort_index()
-    print 'Model of transition {} successfully created \n with {} as template'\
-        .format(new_trans, exist_trans)
+    print('Model of transition {} successfully created \n with {} as template'\
+        .format(new_trans, exist_trans))
     return tmp
 
 
@@ -338,8 +338,8 @@ def fit_with_sherpa(model, data, trans, rows,
         import sherpa.astro.ui as ai
         import sherpa.models as sm
     except ImportError:
-        print " ".join("The Sherpa fitting software must be installed to use \
-            this functionality.".split())
+        print(" ".join("The Sherpa fitting software must be installed to use \
+            this functionality.".split()))
         raise
 
     # Sherpa isn't good at staying clean, need to help it.
@@ -368,8 +368,8 @@ def fit_with_sherpa(model, data, trans, rows,
             comp.fwhm = model.ix[i]['Sigma']
             ai.set_model(shmod, ai.get_model(shmod) + comp)
             ai.show_model(shmod)  # For testing...
-    print '  '
-    print ai.get_model(shmod)
+    print('  ')
+    print(ai.get_model(shmod))
 
     # Set ranges included in fit.
     # First, unset all.
@@ -386,8 +386,8 @@ def fit_with_sherpa(model, data, trans, rows,
     new_model = model.copy()
     # Perform the fit:
     ai.fit(shmod)
-    print ai.get_fit_results()
-    print model
+    print(ai.get_fit_results())
+    print(model)
     return new_model
 
 
@@ -557,7 +557,7 @@ def load_lines_series():
     lines_srs.index = lines_srs.index.map(str.strip)
     lines_srs.columns = lines_srs.columns.map(str.strip)
     lines_srs = lines_srs.apply(air_to_vacuum)
-    print "List of lines loaded"
+    print("List of lines loaded")
     return lines_srs
 
 

@@ -8,7 +8,8 @@ import numpy as np
 import uncertainties.unumpy as unp
 import pandas as pd
 import matplotlib.pyplot as plt
-from lmfit_wrapper import build_model
+from .lmfit_wrapper import build_model
+import imp
 
 #plt.rcdefaults()
 #plt.rc('text', usetex=True)
@@ -20,14 +21,14 @@ from lmfit_wrapper import build_model
 Paired = ['#A6CEE3', '#1F78B4', '#B2DF8A', '#33A02C', '#FB9A99', '#E31A1C',
           '#FDBF6F', '#FF7F00', '#CAB2D6', '#6A3D9A', '#FFFF99', '#B15928']
 Pairdict = dict(
-    zip(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', u'i', 'j', 'k', 'l'], Paired)
+    list(zip(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'], Paired))
 )
 
 
 def prettify_axes(ax, lw=0.6):
     # for spine in ['left', 'right', 'top', 'bottom']:
     #     ax.spines[spine].set_linewidth(lw)
-    [j.set_linewidth(.6) for j in ax.spines.itervalues()]
+    [j.set_linewidth(.6) for j in ax.spines.values()]
     ax.tick_params(labelsize=9, length=2)
     try:
         leg = ax.get_legend()
@@ -71,7 +72,7 @@ def component_wise_plot(
     model.Identifier = model.Identifier.map(ord) - 97
     # print set(model.Complabel)
     model = model.set_index('Complabel', append=True)
-    if 'capsize' in errbarkwargs.keys():
+    if 'capsize' in list(errbarkwargs.keys()):
         capsize = errbarkwargs['capsize']
     else:
         capsize=5
@@ -166,7 +167,7 @@ def doublet_plot(spectrum, ax=None, lines=None):
     # tmp = ratio.reset_index(level=0, drop=False)['Rows'].map(lambda x: int(x.split('-')[0]))
     # ratio['Rows'] = tmp.values
     #return ratio
-    print ratio
+    print(ratio)
     if ax is None:
         fig, ax = plt.subplots(1, 1)
     component_wise_plot(ratio, pars=['Flux', 'Rows'], xerrbar=True)
@@ -185,9 +186,9 @@ def view_doublet(spectrum, row, lines='S II'):
 
 
 def fit_inspect(view, lines=None, row=44, ax=None, wavemode='wave'):
-    import linephysics as ls
-    reload(ls)
-    import lmfit_wrapper as lw
+    from . import linephysics as ls
+    imp.reload(ls)
+    from . import lmfit_wrapper as lw
     spectrum = view.Spectrum
     if ax is None:
         ax = plt.gca()
@@ -200,7 +201,7 @@ def fit_inspect(view, lines=None, row=44, ax=None, wavemode='wave'):
             view, lines=[lines[0], lines[0]], pars_only=True, rows=[row]
         )
         pars = pd[row]['Pars']
-        for k in pars.keys():
+        for k in list(pars.keys()):
             if k.endswith('blue'):
                 pars.pop(k)
             # EXPERIMENTAL
@@ -218,7 +219,7 @@ def fit_inspect(view, lines=None, row=44, ax=None, wavemode='wave'):
     # print pd[row]['Data'].max(), 'DATAMAX'
     ax.plot(wave, pd[row]['Data'], 'k-', drawstyle='steps-mid')
     # ax.plot(wave, md['data'], 'k-', drawstyle='steps-mid')
-    for k in md.keys():
+    for k in list(md.keys()):
         if k in ['errs', 'wave']:
             continue
         if k == 'data':
@@ -243,10 +244,10 @@ def show_residuals(
     """ Shows 2D residual map of a model.
     """
 
-    from helper_functions import wl_to_v
+    from .helper_functions import wl_to_v
 
     try:
-        from evaluate_model import evaluate_transition
+        from .evaluate_model import evaluate_transition
     except ImportError:
         raise
 
@@ -322,9 +323,9 @@ def show_residuals_doublet(
     model index
     """
 
-    from helper_functions import wl_to_v
+    from .helper_functions import wl_to_v
     try:
-        from evaluate_model import evaluate_transition
+        from .evaluate_model import evaluate_transition
     except ImportError:
         raise
 
@@ -345,7 +346,7 @@ def show_residuals_doublet(
         lines += [l for l in model.index.levels[0]
                   if l.startswith('[O II]_3729')]
 
-    print lines
+    print(lines)
     lincen1 = model.loc[lines[0], 'Line center'][0]
     lincen2 = model.loc[lines[1], 'Line center'][0]
     midline = model.loc[[lines[0], lines[1]], 'Line center'].mean()
@@ -375,7 +376,7 @@ def show_residuals_doublet(
     if 'velocity'.startswith(wavemode):
         lincen1 = wl_to_v(lincen1, midline)
         lincen2 = wl_to_v(lincen2, midline)
-    print lincen1, lincen2
+    print(lincen1, lincen2)
     ax.axvline(lincen1, color=lcol, ls=':')
     ax.axvline(lincen2, color=lcol, ls=':')
     return ax, data, simdata#, residdict
@@ -386,7 +387,7 @@ def example_decomposition(target='ESO', UVview=None, VISview=None, row=42,
     ''' Target can be ESO, Haro11B, Haro11C
     '''
     import grism
-    from helper_functions import wl_to_v
+    from .helper_functions import wl_to_v
     from mpl_toolkits.axes_grid1.inset_locator import inset_axes
     if target.lower() == 'eso':
         objname = 'ESO 338'
@@ -441,10 +442,10 @@ def example_decomposition(target='ESO', UVview=None, VISview=None, row=42,
             xticklabels=[], yticklabels=[],
         )
         cntnr.set_xlabel(
-            u'Velocity [km s$^{-1}$]', fontsize=10, labelpad=15, family='serif'
+            'Velocity [km s$^{-1}$]', fontsize=10, labelpad=15, family='serif'
         )
         cntnr.set_ylabel(
-            u'Flux density [$10^{16}$ erg cm$^{-2}$ s$^{-1}$ Å $^{-1}$]',
+            'Flux density [$10^{16}$ erg cm$^{-2}$ s$^{-1}$ Å $^{-1}$]',
             fontsize=10, labelpad=20, family='serif'
         )
     else:
@@ -461,7 +462,7 @@ def example_decomposition(target='ESO', UVview=None, VISview=None, row=42,
     ax1.set_xticks([-400, 0, 400])
     ax1.annotate(r'\sffamily H$\alpha$', annloc, xycoords='axes fraction',
                  size=9)
-    print 'H alpha plotted'
+    print('H alpha plotted')
                         #bbox_to_anchor=[0, .0], )
 
     # O III 5007
@@ -470,7 +471,7 @@ def example_decomposition(target='ESO', UVview=None, VISview=None, row=42,
     OIIIround = int(round(OIIIwave, -1))
     top2 = out['model'].max()
     top = max(top1, top2)
-    print('TOP: '+ str(top) + '\n')
+    print(('TOP: '+ str(top) + '\n'))
     ax1.plot(out1['wave'], out1['data']-out1['model'] + top*1.15,
                      color='gray', zorder=1, drawstyle='steps-mid')
     ax1.plot([Hawave-8, Hawave+8], [top*1.15, top*1.15],
@@ -482,7 +483,7 @@ def example_decomposition(target='ESO', UVview=None, VISview=None, row=42,
     ax2.set_xticks([-400, 0, 400])
     ax2.annotate('\sffamily [O III] 5007', annloc, xycoords='axes fraction',
                  size=9)
-    print 'O III 5007 plotted'
+    print('O III 5007 plotted')
 
     # O II 3726+29
     out = fit_inspect(UVview, lines=OIIlines, ax=ax3, row=int(row))

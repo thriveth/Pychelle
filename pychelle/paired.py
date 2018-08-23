@@ -20,5 +20,5 @@ Colors = [[0.6509803921568628, 0.807843137254902, 0.8901960784313725],
 
 Letters = [chr(i) for i in range(97, 123)]
 
-Paired = dict(zip(Letters, Colors[:26]))
-Paired2 = dict(zip(Letters, Colors2[:26]))
+Paired = dict(list(zip(Letters, Colors[:26])))
+Paired2 = dict(list(zip(Letters, Colors2[:26])))

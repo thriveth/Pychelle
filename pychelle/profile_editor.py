@@ -138,8 +138,8 @@ class ProfileEditor(HasTraits):
         plot = Plot(plotdata)
         plot.y_axis.title = 'Flux density'
         resplot = Plot(plotdata, tick_visible=True, y_auto=True)
-        resplot.x_axis.title = u'Wavelength [Å]'
-        resplot.y_axis.title = u'Residuals/std. err.'
+        resplot.x_axis.title = 'Wavelength [Å]'
+        resplot.y_axis.title = 'Residuals/std. err.'
 
         # Create initial plot: Spectrum data, default first component,
         #   default total line profile.
@@ -259,7 +259,7 @@ class ProfileEditor(HasTraits):
         self.CompNum += 1
         Name = 'Comp' + str(self.CompNum)
         self.CompoList.append(Name)
-        print "Added component nr. " + Name
+        print("Added component nr. " + Name)
         #self.Components[Name]=[0., 1., 0.] # Add booleans for locked or not?
         self.Components[Name] = [0., .1, 0., chr(self.CompNum+96)]
         self.Locks[Name] = [False, False, False, False]
@@ -292,20 +292,20 @@ class ProfileEditor(HasTraits):
             del self.Components[oldName]
             del self.Locks[oldName]
             self.select = newName
-            print 'Removed component nr. ' + str(self.CompNum)
+            print('Removed component nr. ' + str(self.CompNum))
             self.legend.plots = self.plots
             self.CompoList.pop()
             self.CompNum -= 1
         else:
-            print 'No more components to remove'
+            print('No more components to remove')
 
     def _Go_Button_fired(self):
-        print '''This function is yet to be implemented. \n \
+        print('''This function is yet to be implemented. \n \
                 Maybe this button will be removed completely in favor of \
                 another way of doing things. For now, use the OK button and \
                 manually import the model to the fitting software of your \
-                choice.'''
-        print self.Components
+                choice.''')
+        print(self.Components)
         return
 
     # Define what to do when a new component is selected.
@@ -371,7 +371,7 @@ class ProfileEditor(HasTraits):
                              enabled_when='LockCentr==False'),
                         Item('Sigma', label='Sigma',
                              enabled_when='LockSigma==False'),
-                        Item('Heigh', label=u'Strength ',
+                        Item('Heigh', label='Strength ',
                              enabled_when='LockHeigh==False'),
                         springy=True,
                         show_border=False,
@@ -427,7 +427,7 @@ class ProfileEditor(HasTraits):
         self._select_changed()
         self.build_plot()
         self.update_plot()
-        print '    '
+        print('    ')
 
 
     def update_plot(self):
@@ -435,7 +435,7 @@ class ProfileEditor(HasTraits):
             self.mod_x,
             self.Centr + self.line_center,
             self.Sigma) * self.Sigma * sp.sqrt(2. * sp.pi) * self.Heigh
-        ys = sp.asarray(self.y.values()).sum(0)
+        ys = sp.asarray(list(self.y.values())).sum(0)
         self.contarray = sp.ones(self.mod_x.shape[0]) * self.continuum_estimate
         self.Model = self.contarray + ys
         plotdata.set_data('cont', self.contarray)

@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import ast
 from traits.api import Array, Float, Dict, List, Range, Any, HasTraits, Str
-from helper_functions import air_to_vacuum, redshift_ned
-from helper_functions import flux as fluxes
+from .helper_functions import air_to_vacuum, redshift_ned
+from .helper_functions import flux as fluxes
 
 
 class Spectrum2D(HasTraits):
@@ -123,10 +123,10 @@ class Spectrum2D(HasTraits):
         * model (pandas.DataFrame object):
             Dataframe containing the model to be imported.
         """
-        print model.index.levels[0].values.sum()
+        print(model.index.levels[0].values.sum())
         if 'Dummy' in model.index.levels[0].values.sum():
             model = model.drop('Dummy', level=0)
-            print 'Dummy!'
+            print('Dummy!')
         if not 'Ampl_lock' in model.columns:
             model['Ampl_lock'] = False
         if not 'Sigma_lock' in model.columns:
@@ -144,7 +144,7 @@ class Spectrum2D(HasTraits):
             self.z = redshift_ned(self.objname).data.data[0]
         else:
             self.z = redshift_ned(name).data.data[0]
-        print('Found redshift to be z = {}'.format(self.z))
+        print(('Found redshift to be z = {}'.format(self.z)))
 
     # =========================================================================
     #  Properties
@@ -197,4 +197,4 @@ class Spectrum2D(HasTraits):
         self.lines_sel = '{}-{}'.format(self.LineLo, self.LineUp)
 
     def _transition_changed(self):
-        print 'Now working on transition: {0}'.format(self.transition)
+        print('Now working on transition: {0}'.format(self.transition))

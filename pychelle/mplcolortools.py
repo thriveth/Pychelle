@@ -32,8 +32,8 @@ def diverge_map(high=(0.565, 0.392, 0.173), low=(0.094, 0.310, 0.635),
     or rgb color tuples
     '''
     c = mc.ColorConverter().to_rgb
-    if isinstance(low, basestring): low = c(low)
-    if isinstance(high, basestring): high = c(high)
+    if isinstance(low, str): low = c(low)
+    if isinstance(high, str): high = c(high)
     return make_colormap([low, c(mid), 0.5, c(mid), high], name=name)
 
 

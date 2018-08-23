@@ -4,8 +4,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from profiles import gauss
-from helper_functions import wl_to_v, v_to_wl
+from .profiles import gauss
+from .helper_functions import wl_to_v, v_to_wl
 from grism import lines_srs
 
 
@@ -25,7 +25,7 @@ def evaluate_row(data, wave, model, plot=True, cont_subtract=True):
     if plot:
         plt.plot(wave, base_array, 'k-')
         plt.plot(wave, resids, 'b-')
-        for co in compdict.keys():
+        for co in list(compdict.keys()):
             plt.plot(wave, compdict[co], ls='--', label=co)
         plt.legend()
         plt.axvline(0, color='k', ls='--')
@@ -85,11 +85,11 @@ def evaluate_transition(data, wave, model, cont_subtract=False,
 
 
 def cut_transition(data, wave, transition, z=0, velspace=True, halfwidth=20):
-    print transition
+    print(transition)
     # center = float(transition.split('_')[1])
     center = lines_srs.loc[transition] * (1.+z)
     center = center.values
-    print center
+    print(center)
     idx = np.where((wave > center - 20) &(wave < center + 20))[0]
     outdata = data[:, idx]
     outwave = wave[idx]

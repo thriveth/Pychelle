@@ -77,9 +77,9 @@ from chaco.api import ArrayPlotData, PlotLabel, Plot, HPlotContainer, \
         ArrayDataSource, PolygonPlot
 from chaco.tools.api import ScatterInspector, ZoomTool, PanTool, \
         BroadcasterTool, LegendTool, RangeSelection, RangeSelectionOverlay
-from profiles import gauss, voigt, lorentz
-from paired import Paired2 as Paired
-from paired import Paired as Paired2
+from .profiles import gauss, voigt, lorentz
+from .paired import Paired2 as Paired
+from .paired import Paired as Paired2
 
 
 class ProfileEditor(HasTraits):
@@ -183,7 +183,7 @@ class ProfileEditor(HasTraits):
         return 'Comp1'
 
     def build_plot(self):
-        print 'Building plot...'
+        print('Building plot...')
         fitrange = self.fitrange  # Just for convenience
         onearray = Array
         onearray = sp.ones(self.indata.shape[0])
@@ -261,8 +261,8 @@ class ProfileEditor(HasTraits):
         plot = Plot(self.plotdata)
         plot.y_axis.title = 'Flux density'
         resplot = Plot(self.plotdata, tick_visible=True, y_auto=True)
-        resplot.x_axis.title = u'Wavelength [Å]'
-        resplot.y_axis.title = u'Residuals/std. err.'
+        resplot.x_axis.title = 'Wavelength [Å]'
+        resplot.y_axis.title = 'Residuals/std. err.'
 
         # Create initial plot: Spectrum data, default first component,
         #   default total line profile.
@@ -304,7 +304,7 @@ class ProfileEditor(HasTraits):
         )
 
         # There may be an arbitrary number of gaussian components, so:
-        print 'Updating model'
+        print('Updating model')
         for comp in self.CompoList:
             self.comprenders.append(
                 plot.plot(
@@ -399,7 +399,7 @@ class ProfileEditor(HasTraits):
                 (self.line_center - halfrange, self.line_center + halfrange)]
         self.rangelist = self.fitrange
         if len(self.fitrange) > 0:
-            print 'Nonzero fitranges given: ', self.fitrange
+            print('Nonzero fitranges given: ', self.fitrange)
             for ran in self.fitrange:
                 rmin, rmax = ran[0], ran[1]
                 fitrange += sp.where((self.x > rmin) & (self.x < rmax))
@@ -464,7 +464,7 @@ class ProfileEditor(HasTraits):
         next_num = int(self.CompoList[-1][-1]) + 1
         Name = 'Comp' + str(next_num)
         self.CompoList.append(Name)
-        print "Added component nr. " + Name
+        print("Added component nr. " + Name)
         self.Components[Name] = [0., .1, 0., chr(self.CompNum+96),
                                  np.nan, np.nan, np.nan]
         self.Locks[Name] = [False, False, False, False]
@@ -506,12 +506,12 @@ class ProfileEditor(HasTraits):
             del self.Components[oldName]
             del self.Locks[oldName]
             self.select = newName
-            print 'Removed component nr. ' + str(self.CompNum)
+            print('Removed component nr. ' + str(self.CompNum))
             self.legend.plots = self.plots
             self.CompoList.pop(comp_idx)
             self.CompNum -= 1
         else:
-            print 'No more components to remove'
+            print('No more components to remove')
 
     ##=========================================================================
     #    Here follows the functionality of the GO button, split up into one
@@ -540,7 +540,7 @@ class ProfileEditor(HasTraits):
         tofit.set_value('Contin', 'Ampl', self.Components['Contin'][0])
         tofit['Line center'] = self.line_center
         tofit.set_value('Contin', 'Lock', self.LockConti)
-        for lines in self.Components.keys():
+        for lines in list(self.Components.keys()):
             if lines == 'Contin':
                 continue
             tofit.set_value(lines, 'Lock', self.Locks[lines][:3])
@@ -555,17 +555,17 @@ class ProfileEditor(HasTraits):
     def load_parameters_to_fitter(self, fitter='lmfit'):
         if fitter == 'lmfit':
             try:
-                import lmfit_wrapper as lw
+                from . import lmfit_wrapper as lw
             except ImportError:
-                print 'Could not import LMfit'
+                print('Could not import LMfit')
                 return
             self.params = lw.load_params(self.tofit)
 
     def fit_with_lmfit(self, method='lbfgsb', conf='covar', report=True):
         try:
-            import lmfit_wrapper as lw
+            from . import lmfit_wrapper as lw
         except ImportError:
-            print 'Could not import LMfit'
+            print('Could not import LMfit')
             return
         x, data, errs = self.set_fit_data()
         result = lw.fit_it(
@@ -598,7 +598,7 @@ class ProfileEditor(HasTraits):
     def _Go_Button_fired(self):
         # Transform the internal dict holding the model to a Pandas dataframe
         # that the lmfit wrapper will digest:
-        print('Now fitting lines {}'.format(self.linesstring))
+        print(('Now fitting lines {}'.format(self.linesstring)))
         self.create_fit_param_frame()
         self.load_parameters_to_fitter()
         if self.fitter == 'lmfit':
@@ -606,7 +606,7 @@ class ProfileEditor(HasTraits):
         else:
             raise NotImplementedError('Only LMfit backend implemented so far.')
 
-        print('Successfully fitted lines {} \n \n '.format(self.linesstring))
+        print(('Successfully fitted lines {} \n \n '.format(self.linesstring)))
 
     ##=========================================================================
     #    END of GO button functionality.
@@ -682,7 +682,7 @@ class ProfileEditor(HasTraits):
                             Item('LockSigma', label='Lock'),
                         ),
                         HGroup(
-                            Item('Heigh', label=u'Strength ',
+                            Item('Heigh', label='Strength ',
                                  enabled_when='LockHeigh==False'),
                             Item('LockHeigh', label='Lock'),
                         ),
@@ -736,7 +736,7 @@ class ProfileEditor(HasTraits):
         the state variables of the LPbuilder instance.
         '''
         self.CompoList = sorted(self.Components.keys())[:-1]
-        print self.CompoList, self.Components.keys()
+        print(self.CompoList, list(self.Components.keys()))
         #import ipdb; ipdb.set_trace()  # XXX BREAKPOINT
         self.CompNum = len(self.CompoList)
         for com in self.CompoList:
@@ -746,7 +746,7 @@ class ProfileEditor(HasTraits):
         self._select_changed()
         self.build_plot()
         self.update_plot()
-        print '    '
+        print('    ')
 
     def update_plot(self):
         self.y[self.select] = gauss(
@@ -755,7 +755,7 @@ class ProfileEditor(HasTraits):
             self.Sigma,
             self.Heigh
         )
-        ys = sp.asarray(self.y.values()).sum(0)
+        ys = sp.asarray(list(self.y.values())).sum(0)
         self.contarray = sp.ones(self.mod_x.shape[0]) * self.continuum_estimate
         self.Model = self.contarray + ys
         self.plotdata.set_data('cont', self.contarray)

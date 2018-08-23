@@ -15,8 +15,8 @@ from traitsui.api import View, Group, HGroup, Item, EnumEditor
 from traitsui.menu import LiveButtons, ModalButtons
 from chaco.api import ArrayPlotData, GridContainer
 # Other pychelle modules:
-from helper_functions import load_lines_series, air_to_vacuum, vacuum_to_air
-from spectrum2d import Spectrum2D
+from .helper_functions import load_lines_series, air_to_vacuum, vacuum_to_air
+from .spectrum2d import Spectrum2D
 
 
 class Transition(HasTraits):
@@ -98,7 +98,7 @@ class Transition(HasTraits):
         else:
             choices.append('')
             self.add_trait('choices', Enum(choices))
-            print 'No lines listed in this neighbourhood.'
+            print('No lines listed in this neighbourhood.')
             return False
 
     def _z_changed(self):

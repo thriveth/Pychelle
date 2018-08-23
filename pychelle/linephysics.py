@@ -9,8 +9,8 @@ import uncertainties.unumpy as unp
 from uncertainties import ufloat as ufl
 from uncertainties import nominal_value, std_dev
 from uncertainties.unumpy import uarray, nominal_values, std_devs
-from helper_functions import v_to_deltawl, wl_to_v, _extract_1d
-import lmfit_wrapper as lw
+from .helper_functions import v_to_deltawl, wl_to_v, _extract_1d
+from . import lmfit_wrapper as lw
 # reload(lw)
 
 def fit_doublet(
@@ -21,7 +21,7 @@ def fit_doublet(
     Fits two lines as one model, to allow fitting a doublet.
     """
     if (view is None) & (spectrum is None):
-        print 'Either spectrum of view must be given. Aborting.'
+        print('Either spectrum of view must be given. Aborting.')
         return
     elif view is None:
         view = Show2DSpec(spectrum)
@@ -41,14 +41,14 @@ def fit_doublet(
 
     # If rows not explicitly set, set them
     if rows is None:
-        rows = range(1, 92)
+        rows = list(range(1, 92))
         therows = list(
             set(
                 spectrum.model.index.get_level_values('Rows')
                 .map(lambda x: int(x.split('-')[0]))
             )
         )
-        print therows
+        print(therows)
 
     # set default doublet to fit; find the relevant indices and names in model
     # index
@@ -72,7 +72,7 @@ def fit_doublet(
     # Check that we do indeed have two lines
     if len(newlines) != 2:
         raise ValueError("The number of lines must be exactly 2.")
-    print "Now fitting lines {} and {}".format(newlines[0], newlines[1])
+    print("Now fitting lines {} and {}".format(newlines[0], newlines[1]))
     # Combine components by identifier, not auto-assigned name.
     model = spectrum.model.copy()
     # First, temporarily assign the continuum an identifier
@@ -108,7 +108,7 @@ def fit_doublet(
     for therow in combined.index.levels[0]:
         if (int(therow.split('-')[0]) not in rows) and (rows is not None):
             continue
-        print('\n \n Now fitting rows {} using method {} \n'.format(therow, method))
+        print(('\n \n Now fitting rows {} using method {} \n'.format(therow, method)))
         v.LineLo = int(therow.split('-')[0])
         v.LineUp = int(therow.split('-')[1])
         # Extract data and errors to fit:
@@ -203,7 +203,7 @@ def fit_doublet(
             exprdict[comp+'_Sigma_red'] = '{}_Sigma_blue'.format(comp)
             # exprdict[comp+'_Ampl_red'] = comp
 
-        for key in exprdict.keys():
+        for key in list(exprdict.keys()):
             com = p[key]
             com.set(expr=exprdict[key])
 
@@ -222,10 +222,10 @@ def fit_doublet(
         # Now the rather tedious task of separating red and blue parameters and
         # converting them back to DataFrames with the right format to fit
         # seamlessly back into the spectrum model
-        red_keys = [k for k in result.params.keys() if k.endswith('_red')]
-        blue_keys = [k for k in result.params.keys() if k.endswith('_blue')]
+        red_keys = [k for k in list(result.params.keys()) if k.endswith('_red')]
+        blue_keys = [k for k in list(result.params.keys()) if k.endswith('_blue')]
         par_red = result.params.copy()
-        for key in par_red.keys():
+        for key in list(par_red.keys()):
             if key.endswith('_blue'): par_red.pop(key)
             if key.endswith('_red'): result.params.pop(key)
         blue_result = lw.params_to_grism(result, output_format='df')
@@ -298,7 +298,7 @@ def fit_OIII(view=None, spectrum=None,  ampvar=None, sigvar=.2,
         Valid string: 'all'. Otherwise, must be a list of integers.
     """
     if (view is None) & (spectrum is None):
-        print 'Either spectrum of view must be given. Aborting.'
+        print('Either spectrum of view must be given. Aborting.')
         return
     elif view is None:
         view = Show2DSpec(spectrum)
@@ -313,7 +313,7 @@ def fit_OIII(view=None, spectrum=None,  ampvar=None, sigvar=.2,
 
     transit = spectrum.transition
     if not '[O III]' in transit:
-        print "This function is for [O III] only."
+        print("This function is for [O III] only.")
         print('Consider yourself warned')
         #return
     v = view
@@ -333,7 +333,7 @@ def fit_OIII(view=None, spectrum=None,  ampvar=None, sigvar=.2,
         v.LineUp = int(nums[1])
         # if not v.LineLo in rows:
         #     continue
-        print('Now fitting rows {} using method {}'.format(s, method))
+        print(('Now fitting rows {} using method {}'.format(s, method)))
         lp = v.prepare_modeling()
         lp.create_fit_param_frame()
 
@@ -379,18 +379,18 @@ def fit_OIII(view=None, spectrum=None,  ampvar=None, sigvar=.2,
                     exprdict[compo+'_Sigma'] = sig_expr
 
         # print exprdict
-        for key in exprdict.keys():
+        for key in list(exprdict.keys()):
             com = lp.params[key]
             com.set(expr=exprdict[key])
         # print lp.params
         v.lp = lp
-        print 'Now fitting rows: {}'.format(s)
+        print('Now fitting rows: {}'.format(s))
         v.lp.fit_with_lmfit(method=method, conf='conf')
         v.process_results()
         # v._build_model_plot()  #  Does this slow things down?
-        print(
+        print((
             'Succesfully fitted rows {} using method {}\n \n'.format(
-                s, method))
+                s, method)))
 
     # Don't alter any data in-place
     # transframe = spectrum.model.loc[transition].copy()
@@ -597,7 +597,7 @@ def abundance_Te_OIII(spectrum, ebv, n=1e0, mode='components'):
     I3729 = spectrum.flux.loc[OII29]
     #I3729.Flux = uarray(I3729.Flux.values, I3729.Flux_stddev.values)
     Te = TeO3(spectrum, ebv, mode=mode)
-    print I3729
+    print(I3729)
     #print Te
     Te['OII'] = 7.34e-7 * (I3726.Flux + I3729.Flux) * np.exp(3.9 / Te['Te'])
     Te['OIII']
@@ -612,7 +612,7 @@ def component_wise_fit_LLE(inframe, column, frac=0.2, method='lowess'):
     frame['Identifier'] = frame['Identifier'].map(ord) - 97
     for comp in frame.index.levels[0]:
         cframe = frame.loc[[comp]]#.dropna(subset=[column])
-        print 'Component: ', comp
+        print('Component: ', comp)
         cnum = cframe['Identifier'][0] % 12
         rows = cframe.index.get_level_values('Row')
         if method == 'LLE':
@@ -651,5 +651,5 @@ def robust_stddev(inframe, column, sigmas=3):
             if itercount > 3:
                 break
         outframe.set_value(comp, column+'_stddev', Stddev)
-        print outframe
+        print(outframe)
     return  outframe[[column+'_stddev']]

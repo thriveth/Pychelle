@@ -106,7 +106,7 @@ def fill_between_steps(x, y1, y2=0, h_align='mid', ax=None, **kwargs):
     # First, duplicate the x values
     xx = x.repeat(2)[1:]
     # Now: the average x binwidth
-    print x
+    print(x)
     xstep = sp.repeat((x[1:] - x[:-1]), 2)
     xstep = sp.concatenate(([xstep[0]], xstep, [xstep[-1]]))
     # Now: add one step at end of row.
